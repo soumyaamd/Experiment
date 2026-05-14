@@ -11,7 +11,7 @@
 
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: #0e0e0e;
+      background: #e8e8e8;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -21,13 +21,11 @@
       padding: 40px 20px;
     }
 
-    /* ── Header ── */
     .header { text-align: center; }
-    .header h1 { color: #fff; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
-    .header p  { color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 4px; }
+    .header h1 { color: #111; font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+    .header p  { color: #888; font-size: 12px; margin-top: 4px; }
 
-    /* ── Phone + dots row ── */
-    .stage { display: flex; align-items: center; gap: 18px; }
+    .stage { display: flex; align-items: center; gap: 20px; }
 
     /* ── Phone shell ── */
     .phone {
@@ -37,8 +35,10 @@
       background: #fafafa;
       border-radius: 50px;
       overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.12);
-      box-shadow: 0 0 0 8px #1c1c1c, 0 48px 96px rgba(0,0,0,0.8);
+      border: 2px solid rgba(0,0,0,0.08);
+      box-shadow:
+        0 0 0 8px rgba(0,0,0,0.06),
+        0 32px 80px rgba(0,0,0,0.22);
       flex-shrink: 0;
     }
 
@@ -46,155 +46,108 @@
     .statusbar {
       position: absolute;
       top: 0; left: 0; right: 0; height: 44px;
-      background: rgba(250,250,250,0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(250,250,250,0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 20;
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
-    .statusbar-time { font-size: 13px; font-weight: 600; color: #111; }
-    .statusbar-icons { display: flex; gap: 6px; font-size: 10px; color: #111; opacity: 0.7; }
+    .statusbar-time  { font-size: 13px; font-weight: 600; color: #111; }
+    .statusbar-icons { font-size: 10px; color: #111; opacity: 0.55; display: flex; gap: 5px; }
 
-    /* ── Scroll container ── */
+    /* ── Scroll container — one continuous page ── */
     .scroll {
       position: absolute;
       inset: 0;
       overflow-y: scroll;
       overflow-x: hidden;
       scroll-snap-type: y mandatory;
+      background: #fafafa;
+      /* top padding pushes first section down so it centres in the visible area */
       padding-top: var(--peek);
       padding-bottom: var(--peek);
-      background: #0e0e0e;
       scrollbar-width: none;
     }
     .scroll::-webkit-scrollbar { display: none; }
 
-    /* ── Snap slot ── */
+    /* ── Each section slot — full width, no gap feel ── */
     .slot {
+      width: 100%;
       height: var(--snap-step);
-      padding-bottom: var(--gap);
       scroll-snap-align: center;
       scroll-snap-stop: always;
     }
 
-    /* ── Card ── */
-    .card {
-      position: relative;
+    /* ── Section — looks like part of the page, not a card ── */
+    .section {
       width: 100%;
       height: var(--section-h);
       overflow: hidden;
-      border-radius: 20px;
-      /* GPU-only scale + opacity transition */
-      transition:
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity  0.4s cubic-bezier(0.22, 1, 0.36, 1);
-      will-change: transform, opacity;
-      cursor: pointer;
+      position: relative;
+      background: #fff;
+      /* No border radius — these are page sections, not cards */
+      /* Very subtle transition so active section feels "in focus" */
+      transition: opacity 0.35s ease;
+      will-change: opacity;
     }
-    .card.inactive {
-      transform: scale(0.93);
-      opacity: 0.38;
-    }
-    .card.active {
-      transform: scale(1);
-      opacity: 1;
-    }
+    .section.inactive { opacity: 0.55; }
+    .section.active   { opacity: 1; }
 
-    /* ── Screenshot image fills the card ── */
-    .card img {
+    .section img {
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: top center;
-      /* Stagger-in on active */
-      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .card.active img   { transform: scale(1); }
-    .card.inactive img { transform: scale(1.04); }
-
-    /* ── Section label chip (bottom of each card) ── */
-    .card-label {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 40px 16px 14px;
-      background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      /* Stagger-in */
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s 0.15s ease, transform 0.35s 0.15s cubic-bezier(0.22,1,0.36,1);
-    }
-    .card.active .card-label {
-      opacity: 1;
-      transform: translateY(0);
-    }
-    .label-text {
-      font-size: 12px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.9);
-      letter-spacing: 0.04em;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-    }
-    .label-index {
-      font-size: 11px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.5);
     }
 
-    /* ── Edge fades inside phone ── */
+    /* ── Divider line between sections (like a real page separator) ── */
+    .divider {
+      height: var(--gap);
+      background: #f0f0f0;
+      border-top: 1px solid rgba(0,0,0,0.06);
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+    }
+
+    /* ── Subtle white fades at top/bottom to hint at adjacent sections ── */
     .fade-top, .fade-bot {
       position: absolute; left: 0; right: 0;
       pointer-events: none; z-index: 10;
     }
     .fade-top {
-      top: 44px;
-      height: var(--peek);
-      background: linear-gradient(to bottom, rgba(14,14,14,0.92) 0%, transparent 100%);
+      top: 44px; height: var(--peek);
+      background: linear-gradient(to bottom, rgba(250,250,250,0.95) 0%, transparent 100%);
     }
     .fade-bot {
-      bottom: 0;
-      height: var(--peek);
-      background: linear-gradient(to top, rgba(14,14,14,0.92) 0%, transparent 100%);
+      bottom: 0; height: var(--peek);
+      background: linear-gradient(to top, rgba(250,250,250,0.95) 0%, transparent 100%);
     }
 
     /* ── Sidebar dots ── */
     .dots {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
     }
     .dot {
-      width: 3px;
-      border-radius: 3px;
-      background: rgba(255,255,255,0.18);
+      width: 3px; border-radius: 3px;
+      background: rgba(0,0,0,0.15);
+      height: 4px; opacity: 0.5;
       transition:
-        height     0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        height     0.3s cubic-bezier(0.34,1.56,0.64,1),
         background 0.3s ease,
         opacity    0.3s ease;
-      height: 4px;
-      opacity: 0.5;
     }
-    .dot.active {
-      height: 24px;
-      opacity: 1;
-    }
+    .dot.active { height: 24px; opacity: 1; background: #C70255; }
 
-    /* ── Active label below phone ── */
+    /* ── Section label below phone ── */
     .section-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      letter-spacing: 0.04em;
-      min-height: 18px;
+      font-size: 12px; font-weight: 600;
+      color: #555; letter-spacing: 0.04em;
+      min-height: 18px; text-align: center;
       transition: color 0.3s ease;
-      text-align: center;
     }
   </style>
 </head>
@@ -202,28 +155,19 @@
 
 <div class="header">
   <h1>SLAP Home Page</h1>
-  <p>Scroll inside the phone ↕</p>
+  <p>Scroll inside the phone to move between sections ↕</p>
 </div>
 
 <div class="stage">
   <div class="phone">
-    <!-- Status bar -->
     <div class="statusbar">
       <span class="statusbar-time">9:41</span>
-      <div class="statusbar-icons">
-        <span>▋▋▋</span><span>WiFi</span><span>⌁</span>
-      </div>
+      <div class="statusbar-icons"><span>▋▋▋</span><span>WiFi</span><span>⌁</span></div>
     </div>
-
-    <!-- Snap scroll -->
     <div class="scroll" id="scroll"></div>
-
-    <!-- Edge fades -->
     <div class="fade-top"></div>
     <div class="fade-bot"></div>
   </div>
-
-  <!-- Sidebar dots -->
   <div class="dots" id="dots"></div>
 </div>
 
@@ -231,132 +175,113 @@
 
 <script>
   // ── Config ────────────────────────────────────────────────────────────────
-  const PEEK_RATIO = 0.12;
+  const PEEK_RATIO = 0.10;   // 10% peek — subtle, feels like one page
   const PHONE_H    = 780;
-  const GAP        = 8;
+  const GAP        = 1;      // 1px — just a hairline divider between sections
   const PEEK       = Math.round(PHONE_H * PEEK_RATIO);
   const SECTION_H  = PHONE_H - PEEK * 2;
   const SNAP_STEP  = SECTION_H + GAP;
 
-  const r = document.documentElement;
-  r.style.setProperty('--peek',      PEEK      + 'px');
-  r.style.setProperty('--section-h', SECTION_H + 'px');
-  r.style.setProperty('--snap-step', SNAP_STEP + 'px');
-  r.style.setProperty('--gap',       GAP       + 'px');
+  const root = document.documentElement;
+  root.style.setProperty('--peek',      PEEK      + 'px');
+  root.style.setProperty('--section-h', SECTION_H + 'px');
+  root.style.setProperty('--snap-step', SNAP_STEP + 'px');
+  root.style.setProperty('--gap',       GAP       + 'px');
 
   // ── Sections — actual Figma screenshots ───────────────────────────────────
-  // Images are hosted by Figma MCP (valid ~7 days from generation)
   const SECTIONS = [
     {
       name:   'Curated for you',
       img:    'https://www.figma.com/api/mcp/asset/c98abb65-172e-4095-893f-861470b302e5',
-      accent: '#C70255',
     },
     {
       name:   'Review Synthesizer',
       img:    'https://www.figma.com/api/mcp/asset/1e166fd7-deb2-451f-a04d-9f3eb52c0d46',
-      accent: '#333333',
     },
     {
       name:   'Decoded Looks',
       img:    'https://www.figma.com/api/mcp/asset/37cb13a9-8f38-42aa-8ff8-d806b1a3e4a7',
-      accent: '#ffffff',
     },
     {
       name:   'Product Compare',
       img:    'https://www.figma.com/api/mcp/asset/05badbaa-e040-4035-a1b7-efc1aed85d04',
-      accent: '#333333',
     },
     {
       name:   'Deal Wall Alerts',
       img:    'https://www.figma.com/api/mcp/asset/857b6587-a33a-42a9-8b0d-bbf23ad53323',
-      accent: '#E8165B',
     },
     {
       name:   'Complete Your Look',
       img:    'https://www.figma.com/api/mcp/asset/0d792c5e-f5c3-4941-b61e-592834a3c774',
-      accent: '#333333',
     },
     {
       name:   'Occasion',
       img:    'https://www.figma.com/api/mcp/asset/cb4ccb85-e739-40ea-99ab-142697fe85ff',
-      accent: '#333333',
     },
     {
       name:   'Style Drop',
       img:    'https://www.figma.com/api/mcp/asset/8e6b1dbb-72c9-4bf0-86fc-caf8be8c2490',
-      accent: '#ffffff',
     },
     {
       name:   'Help us know you',
       img:    'https://www.figma.com/api/mcp/asset/bb22c6f3-e745-4550-9080-fbd4d122d34f',
-      accent: '#9C89B8',
     },
   ];
 
   // ── Build DOM ─────────────────────────────────────────────────────────────
-  const scrollEl  = document.getElementById('scroll');
-  const dotsEl    = document.getElementById('dots');
-  const labelEl   = document.getElementById('section-label');
+  const scrollEl = document.getElementById('scroll');
+  const dotsEl   = document.getElementById('dots');
+  const labelEl  = document.getElementById('section-label');
 
   SECTIONS.forEach((s, i) => {
-    // Slot
     const slot = document.createElement('div');
     slot.className = 'slot';
 
-    // Card
-    const card = document.createElement('div');
-    card.className = 'card inactive';
-    card.dataset.index = i;
+    const section = document.createElement('div');
+    section.className = 'section inactive';
+    section.dataset.index = i;
 
-    // Screenshot image
     const img = document.createElement('img');
-    img.src = s.img;
-    img.alt = s.name;
+    img.src     = s.img;
+    img.alt     = s.name;
     img.loading = i < 2 ? 'eager' : 'lazy';
 
-    // Label overlay
-    const label = document.createElement('div');
-    label.className = 'card-label';
-    label.innerHTML = `
-      <span class="label-text">${s.name}</span>
-      <span class="label-index">${i + 1} / ${SECTIONS.length}</span>
-    `;
+    section.appendChild(img);
+    slot.appendChild(section);
 
-    card.append(img, label);
-    slot.appendChild(card);
+    // hairline divider between sections
+    if (GAP > 0) {
+      const div = document.createElement('div');
+      div.className = 'divider';
+      slot.appendChild(div);
+    }
+
     scrollEl.appendChild(slot);
 
-    // Sidebar dot
+    // dot
     const dot = document.createElement('div');
     dot.className = 'dot';
     dot.dataset.index = i;
     dotsEl.appendChild(dot);
   });
 
-  // ── Active tracking via IntersectionObserver ──────────────────────────────
+  // ── Active tracking ───────────────────────────────────────────────────────
   let activeIndex = -1;
 
   function setActive(idx) {
     if (idx === activeIndex) return;
     activeIndex = idx;
-    const s = SECTIONS[idx];
 
-    document.querySelectorAll('.card').forEach((c, i) => {
-      c.classList.toggle('active',   i === idx);
-      c.classList.toggle('inactive', i !== idx);
+    document.querySelectorAll('.section').forEach((s, i) => {
+      s.classList.toggle('active',   i === idx);
+      s.classList.toggle('inactive', i !== idx);
     });
 
     document.querySelectorAll('.dot').forEach((d, i) => {
-      const isActive = i === idx;
-      d.classList.toggle('active', isActive);
-      d.style.background = isActive ? s.accent : 'rgba(255,255,255,0.18)';
+      d.classList.toggle('active', i === idx);
     });
 
-    labelEl.textContent  = s.name;
-    labelEl.style.color  = s.accent === '#ffffff' || s.accent === '#9C89B8'
-      ? '#ffffff'
-      : s.accent;
+    labelEl.textContent = SECTIONS[idx].name;
   }
 
   const observer = new IntersectionObserver(
@@ -370,7 +295,7 @@
     { root: scrollEl, threshold: 0.55 }
   );
 
-  document.querySelectorAll('.card').forEach(c => observer.observe(c));
+  document.querySelectorAll('.section').forEach(s => observer.observe(s));
   setActive(0);
 </script>
 </body>
