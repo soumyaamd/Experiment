@@ -19,7 +19,6 @@ import {
   Assets,
   Colors,
   Radius,
-  SCREEN_HEIGHT,
   SECTION_HEIGHT,
   Spacing,
   Typography,
